@@ -16,6 +16,7 @@ struct AuthView: View {
     @State private var password = ""
     @State private var isLoading = false
     @State private var errorMessage: String?
+    @State private var showEmailConfirmation = false
 
     var body: some View {
         ScrollView {
@@ -130,6 +131,16 @@ struct AuthView: View {
         .navigationTitle(mode == .signUp ? "Sign up" : "Sign in")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear { mode = initialMode }
+        .alert("Check your email", isPresented: $showEmailConfirmation) {
+            Button("OK") {
+                // Switch to sign in mode so they can log in after confirming
+                withAnimation {
+                    mode = .signIn
+                }
+            }
+        } message: {
+            Text("We sent a confirmation link to \(email). Tap the link to verify your account, then come back and sign in.")
+        }
     }
 
     // MARK: - Form
@@ -179,10 +190,12 @@ struct AuthView: View {
         do {
             if mode == .signUp {
                 try await authManager.signUpWithEmail(email: email, password: password, name: name)
+                // Show confirmation alert — Supabase sends verification email
+                showEmailConfirmation = true
             } else {
                 try await authManager.signInWithEmail(email: email, password: password)
+                onSuccess()
             }
-            onSuccess()
         } catch {
             errorMessage = error.localizedDescription
         }
