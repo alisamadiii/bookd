@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00C9BACD3609C120DAEB2940 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F215165A8F27CC591222F629 /* DataService.swift */; };
+		0AD275824EBEAE9A89209BDD /* RealtimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED7DA9D265425C4CA054E7C2 /* RealtimeManager.swift */; };
 		28BC5575D1FF9D1927A08988 /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D677C5E35FA6FB1A37584A69 /* ConfettiView.swift */; };
 		2F65A6250A694CEA1571C91F /* ProCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977362D3FE3262B89F47515C /* ProCalendarView.swift */; };
 		301D569A40B228EE9F2DDB6D /* PublicProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C8D346C053D76B636D31FC3 /* PublicProfileView.swift */; };
@@ -15,6 +17,8 @@
 		3CB65F23374C57CF53F21E83 /* ProfileSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF101B7E6E787619585486D8 /* ProfileSettingsView.swift */; };
 		43A20742A8726E06616EE23A /* MeshGradientImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF37AC5C050013295E895F97 /* MeshGradientImage.swift */; };
 		610AB14622427606FAEE770B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC65AE30CEA64B92A528E698 /* Assets.xcassets */; };
+		6422FA8B23E18E6D17DB5D78 /* DBModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B306F5366C281B4714A4DB /* DBModels.swift */; };
+		6A6912D44D59E50BAB5378BB /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F59116E9267EA72DE93CB /* AuthManager.swift */; };
 		860B03B3FBAF8980A9EAF8EB /* BookdApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F714366B51CAA64EB1A09F5E /* BookdApp.swift */; };
 		883C33C130DF1F66A51DC20D /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173D612FF5E109287EC1BF40 /* OnboardingView.swift */; };
 		8C71F8F80155AC79999896F7 /* StickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1450B8BE80CD1FE893FC9566 /* StickerView.swift */; };
@@ -27,6 +31,8 @@
 		A1DD15D046453E0582B72D46 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25161A87FD8796FFC252E0F /* SampleData.swift */; };
 		A597C7C2EFEFB5E4229B6BDB /* SparklineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D96EEA024924E56E2DACEF15 /* SparklineView.swift */; };
 		B70EED872508D0656D1F58B8 /* ProDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3DCB6C7B2A04D32800AE83D /* ProDashboardView.swift */; };
+		BF14D59815612D3377F0A75C /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE7C39D1DC860B8C4378A757 /* SupabaseClient.swift */; };
+		C1858EED202FFDB7E056E024 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = A6560FECBF54D5D311DE5457 /* Supabase */; };
 		C3DFEB537465F34CF9E7DC18 /* ProSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CED677CBC73145CF5995FA /* ProSetupView.swift */; };
 		D41D0FC4816B308135ACF4EF /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BC62FCBA4893DEDEC79A169 /* MessagesView.swift */; };
 		E8162285DAA8D109B39C0713 /* BookingConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265F4DF71B0A8E2A1055A372 /* BookingConfirmationView.swift */; };
@@ -43,6 +49,7 @@
 		257E4F81C20855C4F9A0EE23 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		265F4DF71B0A8E2A1055A372 /* BookingConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingConfirmationView.swift; sourceTree = "<group>"; };
 		3C8D346C053D76B636D31FC3 /* PublicProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileView.swift; sourceTree = "<group>"; };
+		51B306F5366C281B4714A4DB /* DBModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBModels.swift; sourceTree = "<group>"; };
 		6EF50A0C101A9C5E01142567 /* AppointmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppointmentsView.swift; sourceTree = "<group>"; };
 		751BC6AAF5B393C6973D7225 /* StarRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarRatingView.swift; sourceTree = "<group>"; };
 		76CED677CBC73145CF5995FA /* ProSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProSetupView.swift; sourceTree = "<group>"; };
@@ -52,6 +59,7 @@
 		B50F6F01E5C7E6410584D172 /* RoleSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleSelectView.swift; sourceTree = "<group>"; };
 		BC65AE30CEA64B92A528E698 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C837A5357A075BF119474681 /* BookdTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookdTheme.swift; sourceTree = "<group>"; };
+		C85F59116E9267EA72DE93CB /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		CAE3C74902416C3160AF7F62 /* HomeFeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFeedView.swift; sourceTree = "<group>"; };
 		CDBB9AA2FB4B56D363E36747 /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		CE936A1B83E94B7AD08FFADF /* BookingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingFlowView.swift; sourceTree = "<group>"; };
@@ -62,9 +70,23 @@
 		D96EEA024924E56E2DACEF15 /* SparklineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparklineView.swift; sourceTree = "<group>"; };
 		DF101B7E6E787619585486D8 /* ProfileSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingsView.swift; sourceTree = "<group>"; };
 		E25161A87FD8796FFC252E0F /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
-		E7AAAB3A4B56B59F1042A596 /* Bookd.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bookd.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E7AAAB3A4B56B59F1042A596 /* Bookd.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Bookd.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED7DA9D265425C4CA054E7C2 /* RealtimeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeManager.swift; sourceTree = "<group>"; };
+		F215165A8F27CC591222F629 /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		F714366B51CAA64EB1A09F5E /* BookdApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookdApp.swift; sourceTree = "<group>"; };
+		FE7C39D1DC860B8C4378A757 /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F0E2984A979DDEDFA5B5969D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1858EED202FFDB7E056E024 /* Supabase in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		001C7B2F2F390D3751C7E17F = {
@@ -135,9 +157,21 @@
 			isa = PBXGroup;
 			children = (
 				79B175753E527A2264177944 /* BookdModels.swift */,
+				51B306F5366C281B4714A4DB /* DBModels.swift */,
 				E25161A87FD8796FFC252E0F /* SampleData.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		AA2796CC5C9C0887BE6FF7FB /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				C85F59116E9267EA72DE93CB /* AuthManager.swift */,
+				F215165A8F27CC591222F629 /* DataService.swift */,
+				ED7DA9D265425C4CA054E7C2 /* RealtimeManager.swift */,
+				FE7C39D1DC860B8C4378A757 /* SupabaseClient.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		ACE5B46FC75E45B0BF4AF265 /* Navigation */ = {
@@ -158,6 +192,7 @@
 				A9C5ECA136CD8F1AB38C24A4 /* Models */,
 				ACE5B46FC75E45B0BF4AF265 /* Navigation */,
 				DFEA6FC9A88368B62ABBD26B /* Screens */,
+				AA2796CC5C9C0887BE6FF7FB /* Services */,
 				FD4FF97B777632C8C961DD0C /* Theme */,
 			);
 			path = Bookd;
@@ -190,6 +225,7 @@
 			buildPhases = (
 				C4062094126E091034D4FC4B /* Sources */,
 				2F306DEE613F6EECCEF870CD /* Resources */,
+				F0E2984A979DDEDFA5B5969D /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -197,6 +233,7 @@
 			);
 			name = Bookd;
 			packageProductDependencies = (
+				A6560FECBF54D5D311DE5457 /* Supabase */,
 			);
 			productName = Bookd;
 			productReference = E7AAAB3A4B56B59F1042A596 /* Bookd.app */;
@@ -225,6 +262,9 @@
 			);
 			mainGroup = 001C7B2F2F390D3751C7E17F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3E5B8103C2CA081AF1EB85EC /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 05287C624A41B8E7E1E0B622 /* Products */;
 			projectDirPath = "";
@@ -253,6 +293,7 @@
 			files = (
 				91590449A9FBCD1873A37E3D /* AppState.swift in Sources */,
 				F4449BEC3F1D7AADA3DB6C2F /* AppointmentsView.swift in Sources */,
+				6A6912D44D59E50BAB5378BB /* AuthManager.swift in Sources */,
 				EFBEDB642EC3559A98BA455C /* AvatarView.swift in Sources */,
 				860B03B3FBAF8980A9EAF8EB /* BookdApp.swift in Sources */,
 				9C97767D14E20B56D85AF468 /* BookdModels.swift in Sources */,
@@ -260,6 +301,8 @@
 				E8162285DAA8D109B39C0713 /* BookingConfirmationView.swift in Sources */,
 				ED1BD3C14F6461A679D449E9 /* BookingFlowView.swift in Sources */,
 				28BC5575D1FF9D1927A08988 /* ConfettiView.swift in Sources */,
+				6422FA8B23E18E6D17DB5D78 /* DBModels.swift in Sources */,
+				00C9BACD3609C120DAEB2940 /* DataService.swift in Sources */,
 				9A65803338ACFF970B654F62 /* HomeFeedView.swift in Sources */,
 				43A20742A8726E06616EE23A /* MeshGradientImage.swift in Sources */,
 				D41D0FC4816B308135ACF4EF /* MessagesView.swift in Sources */,
@@ -270,12 +313,14 @@
 				C3DFEB537465F34CF9E7DC18 /* ProSetupView.swift in Sources */,
 				3CB65F23374C57CF53F21E83 /* ProfileSettingsView.swift in Sources */,
 				301D569A40B228EE9F2DDB6D /* PublicProfileView.swift in Sources */,
+				0AD275824EBEAE9A89209BDD /* RealtimeManager.swift in Sources */,
 				94898757C766D4393E5446F0 /* RoleSelectView.swift in Sources */,
 				A1DD15D046453E0582B72D46 /* SampleData.swift in Sources */,
 				34EA67283552A1C835C64708 /* SearchView.swift in Sources */,
 				A597C7C2EFEFB5E4229B6BDB /* SparklineView.swift in Sources */,
 				36363F345B583B0FC206E0C9 /* StarRatingView.swift in Sources */,
 				8C71F8F80155AC79999896F7 /* StickerView.swift in Sources */,
+				BF14D59815612D3377F0A75C /* SupabaseClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,7 +334,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 3WUS69PJ45;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Bookd/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Bookd;
@@ -315,7 +359,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 3WUS69PJ45;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Bookd/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Bookd;
@@ -475,6 +518,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3E5B8103C2CA081AF1EB85EC /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A6560FECBF54D5D311DE5457 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3E5B8103C2CA081AF1EB85EC /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 194F286DD0B3013B594A92BC /* Project object */;
 }

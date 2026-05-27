@@ -3,25 +3,43 @@ import SwiftUI
 @main
 struct BookdApp: App {
     @State private var appState = AppState()
+    @State private var authManager = AuthManager()
+    @State private var dataService = DataService()
+    @State private var realtimeManager = RealtimeManager()
 
     var body: some Scene {
         WindowGroup {
             Group {
-                if !appState.hasCompletedOnboarding {
-                    OnboardingView {
-                        withAnimation(.spring(duration: 0.4)) {
-                            appState.hasCompletedOnboarding = true
+                if authManager.isLoading {
+                    // Splash
+                    ZStack {
+                        Color(.systemBackground).ignoresSafeArea()
+                        VStack(spacing: 8) {
+                            Text("Bookd")
+                                .font(.system(size: 32, weight: .heavy))
+                                .tracking(-1)
+                            Text(".")
+                                .font(.system(size: 32, weight: .heavy))
+                                .foregroundStyle(Color.bookdAccent)
+                                .offset(x: 0, y: -8)
                         }
                     }
-                    .transition(.opacity)
+                } else if !authManager.isSignedIn || !appState.hasCompletedOnboarding {
+                    OnboardingView {
+                        appState.hasCompletedOnboarding = true
+                    }
                 } else {
                     MainTabView()
                         .environment(appState)
-                        .transition(.opacity)
+                        .environment(authManager)
+                        .environment(dataService)
+                        .environment(realtimeManager)
                 }
             }
+            .animation(.easeInOut(duration: 0.3), value: authManager.isSignedIn)
             .animation(.easeInOut(duration: 0.3), value: appState.hasCompletedOnboarding)
             .tint(.bookdAccent)
+            .environment(authManager)
         }
     }
 }
@@ -30,12 +48,13 @@ struct BookdApp: App {
 
 struct MainTabView: View {
     @Environment(AppState.self) private var appState
+    @Environment(AuthManager.self) private var authManager
+    @Environment(DataService.self) private var dataService
 
     var body: some View {
         @Bindable var state = appState
 
         TabView(selection: $state.selectedTab) {
-            // Tab 1: Home / Dashboard
             Tab(appState.isPro ? "Dashboard" : "Home",
                 systemImage: appState.isPro ? "chart.bar.fill" : "house.fill",
                 value: .home)
@@ -65,7 +84,6 @@ struct MainTabView: View {
                 }
             }
 
-            // Tab 2: Search / Calendar
             Tab(appState.isPro ? "Calendar" : "Search",
                 systemImage: appState.isPro ? "calendar" : "magnifyingglass",
                 value: .search)
@@ -79,14 +97,12 @@ struct MainTabView: View {
                 }
             }
 
-            // Tab 3: Bookings
             Tab("Bookings", systemImage: "calendar.badge.clock", value: .bookings) {
                 NavigationStack {
                     AppointmentsView(selectedProId: $state.selectedProId)
                 }
             }
 
-            // Tab 4: Messages
             Tab(value: .messages) {
                 NavigationStack {
                     MessagesView(selectedThread: $state.selectedThread)
@@ -95,14 +111,9 @@ struct MainTabView: View {
                         }
                 }
             } label: {
-                Label {
-                    Text("Messages")
-                } icon: {
-                    Image(systemName: "bubble.right.fill")
-                }
+                Label("Messages", systemImage: "bubble.right.fill")
             }
 
-            // Tab 5: Profile
             Tab("Profile", systemImage: "person.fill", value: .profile) {
                 NavigationStack {
                     if appState.isPro {
@@ -117,7 +128,6 @@ struct MainTabView: View {
                 }
             }
         }
-        // Booking flow sheet
         .sheet(isPresented: $state.showBooking) {
             if let proId = appState.bookingProId {
                 BookingFlowView(
@@ -132,13 +142,16 @@ struct MainTabView: View {
                 .interactiveDismissDisabled()
             }
         }
-        // Pro setup sheet
         .sheet(isPresented: $state.showProSetup) {
             ProSetupView {
                 appState.showProSetup = false
             } onClose: {
                 appState.showProSetup = false
             }
+        }
+        .task {
+            // Load feed on launch
+            await dataService.loadFeed()
         }
     }
 }

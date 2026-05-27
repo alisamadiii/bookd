@@ -9,6 +9,10 @@ settings:
   base:
     SWIFT_VERSION: "6.0"
     IPHONEOS_DEPLOYMENT_TARGET: "26.0"
+packages:
+  Supabase:
+    url: https://github.com/supabase/supabase-swift
+    from: "2.0.0"
 targets:
   Bookd:
     type: application
@@ -17,6 +21,9 @@ targets:
       - path: Bookd
         excludes:
           - "**/*.xcodeproj/**"
+    dependencies:
+      - package: Supabase
+        product: Supabase
     settings:
       base:
         INFOPLIST_FILE: Bookd/Info.plist
