@@ -109,6 +109,37 @@ final class AuthManager {
         await loadProfile(uid: uid)
     }
 
+    // MARK: - Email/Password Auth
+
+    func signUpWithEmail(email: String, password: String, name: String) async throws {
+        let session = try await AppSupabase.client.auth.signUp(
+            email: email,
+            password: password,
+            data: ["full_name": .string(name)]
+        ).session
+
+        self.session = session
+
+        // Update profile name
+        if let uid = session?.user.id, !name.isEmpty {
+            try await AppSupabase.client
+                .from("profiles")
+                .update(["full_name": name])
+                .eq("id", value: uid.uuidString)
+                .execute()
+            await loadProfile(uid: uid)
+        }
+    }
+
+    func signInWithEmail(email: String, password: String) async throws {
+        let session = try await AppSupabase.client.auth.signIn(
+            email: email,
+            password: password
+        )
+        self.session = session
+        await loadProfile(uid: session.user.id)
+    }
+
     // MARK: - Sign Out
 
     func signOut() async throws {

@@ -12,6 +12,7 @@ final class AppState {
     var bookingServiceId: String?
     var selectedThread: MessageThread?
     var showProSetup = false
+    var showSignIn = false
 
     func openProfile(_ proId: String) {
         selectedProId = proId

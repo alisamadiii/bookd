@@ -11,23 +11,9 @@ struct BookdApp: App {
         WindowGroup {
             Group {
                 if authManager.isLoading {
-                    // Splash
-                    ZStack {
-                        Color(.systemBackground).ignoresSafeArea()
-                        VStack(spacing: 8) {
-                            Text("Bookd")
-                                .font(.system(size: 32, weight: .heavy))
-                                .tracking(-1)
-                            Text(".")
-                                .font(.system(size: 32, weight: .heavy))
-                                .foregroundStyle(Color.bookdAccent)
-                                .offset(x: 0, y: -8)
-                        }
-                    }
-                } else if !authManager.isSignedIn || !appState.hasCompletedOnboarding {
-                    OnboardingView {
-                        appState.hasCompletedOnboarding = true
-                    }
+                    splashView
+                } else if !authManager.isSignedIn {
+                    authFlow
                 } else {
                     MainTabView()
                         .environment(appState)
@@ -37,9 +23,50 @@ struct BookdApp: App {
                 }
             }
             .animation(.easeInOut(duration: 0.3), value: authManager.isSignedIn)
-            .animation(.easeInOut(duration: 0.3), value: appState.hasCompletedOnboarding)
             .tint(.bookdAccent)
             .environment(authManager)
+        }
+    }
+
+    // MARK: - Splash
+
+    private var splashView: some View {
+        ZStack {
+            Color(.systemBackground).ignoresSafeArea()
+            HStack(spacing: 0) {
+                Text("Bookd")
+                    .font(.system(size: 32, weight: .heavy))
+                    .tracking(-1)
+                Text(".")
+                    .font(.system(size: 32, weight: .heavy))
+                    .foregroundStyle(Color.bookdAccent)
+            }
+        }
+    }
+
+    // MARK: - Auth Flow
+
+    @ViewBuilder
+    private var authFlow: some View {
+        if !appState.hasCompletedOnboarding {
+            OnboardingView {
+                // "Get started" / "Skip" → show auth
+                withAnimation(.spring(duration: 0.4)) {
+                    appState.hasCompletedOnboarding = true
+                }
+            } onSignIn: {
+                // "Sign in" link → show auth in sign-in mode
+                withAnimation(.spring(duration: 0.4)) {
+                    appState.hasCompletedOnboarding = true
+                    appState.showSignIn = true
+                }
+            }
+            .transition(.opacity)
+        } else {
+            NavigationStack {
+                AuthView(onSuccess: { }, initialMode: appState.showSignIn ? .signIn : .signUp)
+            }
+            .transition(.move(edge: .trailing).combined(with: .opacity))
         }
     }
 }
@@ -150,7 +177,6 @@ struct MainTabView: View {
             }
         }
         .task {
-            // Load feed on launch
             await dataService.loadFeed()
         }
     }

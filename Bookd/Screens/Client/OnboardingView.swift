@@ -42,6 +42,7 @@ private let slides: [OnboardingSlide] = [
 
 struct OnboardingView: View {
     let onComplete: () -> Void
+    let onSignIn: () -> Void
 
     @State private var currentIndex = 0
 
@@ -171,17 +172,21 @@ struct OnboardingView: View {
                     .padding(.top, 28)
 
                     // Sign in link
-                    HStack {
-                        Spacer()
-                        Text("Already have an account? ")
-                            .foregroundStyle(.white.opacity(0.8))
-                        + Text("Sign in")
-                            .foregroundStyle(.white)
-                            .bold()
-                            .underline()
-                        Spacer()
+                    Button {
+                        onSignIn()
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Text("Already have an account? ")
+                                .foregroundStyle(.white.opacity(0.8))
+                            + Text("Sign in")
+                                .foregroundStyle(.white)
+                                .bold()
+                                .underline()
+                            Spacer()
+                        }
+                        .font(.system(size: 13))
                     }
-                    .font(.system(size: 13))
                     .padding(.top, 18)
                 }
                 .padding(.horizontal, 24)

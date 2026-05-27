@@ -35,6 +35,7 @@
 		C1858EED202FFDB7E056E024 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = A6560FECBF54D5D311DE5457 /* Supabase */; };
 		C3DFEB537465F34CF9E7DC18 /* ProSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CED677CBC73145CF5995FA /* ProSetupView.swift */; };
 		D41D0FC4816B308135ACF4EF /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BC62FCBA4893DEDEC79A169 /* MessagesView.swift */; };
+		D4BBAC18AB0FBFC4DEEF8FFE /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB0FEAA169B1FDD8EE69345 /* AuthView.swift */; };
 		E8162285DAA8D109B39C0713 /* BookingConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265F4DF71B0A8E2A1055A372 /* BookingConfirmationView.swift */; };
 		ED1BD3C14F6461A679D449E9 /* BookingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE936A1B83E94B7AD08FFADF /* BookingFlowView.swift */; };
 		EFBEDB642EC3559A98BA455C /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBB9AA2FB4B56D363E36747 /* AvatarView.swift */; };
@@ -46,6 +47,7 @@
 		173D612FF5E109287EC1BF40 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		1BC62FCBA4893DEDEC79A169 /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
 		1F393812974EE339F8940B76 /* ProProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProProfileView.swift; sourceTree = "<group>"; };
+		1FB0FEAA169B1FDD8EE69345 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		257E4F81C20855C4F9A0EE23 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		265F4DF71B0A8E2A1055A372 /* BookingConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingConfirmationView.swift; sourceTree = "<group>"; };
 		3C8D346C053D76B636D31FC3 /* PublicProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileView.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				6EF50A0C101A9C5E01142567 /* AppointmentsView.swift */,
+				1FB0FEAA169B1FDD8EE69345 /* AuthView.swift */,
 				CAE3C74902416C3160AF7F62 /* HomeFeedView.swift */,
 				1BC62FCBA4893DEDEC79A169 /* MessagesView.swift */,
 				173D612FF5E109287EC1BF40 /* OnboardingView.swift */,
@@ -249,6 +252,7 @@
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					6FD3457F3FA51E841B9E9C7E = {
+						DevelopmentTeam = 3WUS69PJ45;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -294,6 +298,7 @@
 				91590449A9FBCD1873A37E3D /* AppState.swift in Sources */,
 				F4449BEC3F1D7AADA3DB6C2F /* AppointmentsView.swift in Sources */,
 				6A6912D44D59E50BAB5378BB /* AuthManager.swift in Sources */,
+				D4BBAC18AB0FBFC4DEEF8FFE /* AuthView.swift in Sources */,
 				EFBEDB642EC3559A98BA455C /* AvatarView.swift in Sources */,
 				860B03B3FBAF8980A9EAF8EB /* BookdApp.swift in Sources */,
 				9C97767D14E20B56D85AF468 /* BookdModels.swift in Sources */,
@@ -334,6 +339,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3WUS69PJ45;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Bookd/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Bookd;
@@ -359,6 +365,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3WUS69PJ45;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Bookd/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Bookd;
