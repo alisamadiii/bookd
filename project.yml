@@ -1,0 +1,32 @@
+name: Bookd
+options:
+  bundleIdPrefix: com.bookd
+  deploymentTarget:
+    iOS: "26.0"
+  xcodeVersion: "16.2"
+  generateEmptyDirectories: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "26.0"
+targets:
+  Bookd:
+    type: application
+    platform: iOS
+    sources:
+      - path: Bookd
+        excludes:
+          - "**/*.xcodeproj/**"
+    settings:
+      base:
+        INFOPLIST_FILE: Bookd/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.alisamadi.bookd
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        GENERATE_INFOPLIST_FILE: true
+        INFOPLIST_KEY_CFBundleDisplayName: Bookd
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: true
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: true
+        INFOPLIST_KEY_UILaunchScreen_Generation: true
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        CODE_SIGN_STYLE: Automatic
