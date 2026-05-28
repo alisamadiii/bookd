@@ -383,7 +383,16 @@ struct EditProfileView: View {
                 authManager.profile?.handle = trimmedHandle
             }
             if let url = newAvatarUrl {
-                authManager.profile?.avatarUrl = url
+                // Append cache-buster so AsyncImage reloads the new image
+                let cacheBusted = url.contains("?") ? "\(url)&v=\(Int(Date().timeIntervalSince1970))" : "\(url)?v=\(Int(Date().timeIntervalSince1970))"
+                authManager.profile?.avatarUrl = cacheBusted
+
+                // Also update in DB with cache-busted URL
+                try await AppSupabase.client
+                    .from("profiles")
+                    .update(["avatar_url": cacheBusted])
+                    .eq("id", value: uid.uuidString)
+                    .execute()
             }
 
             dismiss()
