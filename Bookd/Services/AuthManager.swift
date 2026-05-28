@@ -22,25 +22,26 @@ final class AuthManager {
     // MARK: - Bootstrap
 
     private func bootstrap() async {
-        do {
-            session = try await AppSupabase.client.auth.session
-            if let uid = session?.user.id {
-                await loadProfile(uid: uid)
-            }
-        } catch {
-            session = nil
+        // Try to restore existing session — no error if missing
+        session = try? await AppSupabase.client.auth.session
+        if let uid = session?.user.id {
+            await loadProfile(uid: uid)
         }
         isLoading = false
 
         // Listen for auth state changes
         Task {
             for await (event, session) in AppSupabase.client.auth.authStateChanges {
-                self.session = session
+                await MainActor.run {
+                    self.session = session
+                }
                 if let uid = session?.user.id, event == .signedIn {
                     await loadProfile(uid: uid)
                 } else if event == .signedOut {
-                    profile = nil
-                    proProfile = nil
+                    await MainActor.run {
+                        self.profile = nil
+                        self.proProfile = nil
+                    }
                 }
             }
         }
