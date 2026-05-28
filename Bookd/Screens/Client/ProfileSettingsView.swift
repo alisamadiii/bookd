@@ -345,39 +345,50 @@ struct EditProfileView: View {
         isSaving = true
 
         do {
-            // Upload avatar if changed
-            var avatarUrl = authManager.profile?.avatarUrl
+            // Step 1: Upload avatar if changed
+            var newAvatarUrl: String?
             if let data = avatarData {
-                avatarUrl = try await dataService.uploadAvatar(userId: uid, imageData: data)
+                do {
+                    newAvatarUrl = try await dataService.uploadAvatar(userId: uid, imageData: data)
+                } catch {
+                    errorMessage = "Avatar upload failed: \(error.localizedDescription)"
+                    isSaving = false
+                    return
+                }
             }
 
-            // Update profile
+            // Step 2: Build profile update
             var updates: [String: String] = [
                 "full_name": fullName,
             ]
-            if !handle.isEmpty {
-                updates["handle"] = handle.lowercased()
+            // Only send handle if it's valid (3+ chars, alphanumeric)
+            let trimmedHandle = handle.lowercased().trimmingCharacters(in: .whitespaces)
+            if trimmedHandle.count >= 3 {
+                updates["handle"] = trimmedHandle
             }
-            if let avatarUrl {
-                updates["avatar_url"] = avatarUrl
+            if let url = newAvatarUrl {
+                updates["avatar_url"] = url
             }
 
+            // Step 3: Update profile in DB
             try await AppSupabase.client
                 .from("profiles")
                 .update(updates)
                 .eq("id", value: uid.uuidString)
                 .execute()
 
-            // Refresh profile in auth manager
+            // Step 4: Refresh local state
             authManager.profile?.fullName = fullName
-            authManager.profile?.handle = handle.lowercased()
-            if let avatarUrl {
-                authManager.profile?.avatarUrl = avatarUrl
+            if trimmedHandle.count >= 3 {
+                authManager.profile?.handle = trimmedHandle
+            }
+            if let url = newAvatarUrl {
+                authManager.profile?.avatarUrl = url
             }
 
             dismiss()
         } catch {
-            errorMessage = "Failed to save: \(error.localizedDescription)"
+            errorMessage = "Profile update failed: \(error.localizedDescription)"
         }
 
         isSaving = false

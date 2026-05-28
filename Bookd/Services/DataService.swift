@@ -342,7 +342,7 @@ final class DataService {
     // MARK: - Storage
 
     func uploadAvatar(userId: UUID, imageData: Data) async throws -> String {
-        let path = "\(userId.uuidString)/avatar.jpg"
+        let path = "\(userId.uuidString.lowercased())/avatar.jpg"
         try await AppSupabase.client.storage
             .from("avatars")
             .upload(path, data: imageData, options: .init(contentType: "image/jpeg", upsert: true))
@@ -350,7 +350,7 @@ final class DataService {
     }
 
     func uploadCover(userId: UUID, imageData: Data) async throws -> String {
-        let path = "\(userId.uuidString)/cover.jpg"
+        let path = "\(userId.uuidString.lowercased())/cover.jpg"
         try await AppSupabase.client.storage
             .from("covers")
             .upload(path, data: imageData, options: .init(contentType: "image/jpeg", upsert: true))
@@ -358,7 +358,7 @@ final class DataService {
     }
 
     func uploadPortfolioImage(userId: UUID, postId: UUID, imageData: Data) async throws -> String {
-        let path = "\(userId.uuidString)/\(postId.uuidString).jpg"
+        let path = "\(userId.uuidString.lowercased())/\(postId.uuidString.lowercased()).jpg"
         try await AppSupabase.client.storage
             .from("portfolio")
             .upload(path, data: imageData, options: .init(contentType: "image/jpeg", upsert: true))
