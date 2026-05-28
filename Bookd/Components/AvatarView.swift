@@ -1,11 +1,19 @@
 import SwiftUI
 
 /// Circular mesh-gradient avatar with initials overlay.
+/// Always shows gradient — never a gray circle. Falls back to brand palette.
 struct AvatarView: View {
     let palette: [String]
     var size: CGFloat = 44
     var name: String = ""
     var showRing: Bool = false
+
+    /// Brand default palette — used when palette is nil or empty
+    private static let defaultPalette = ["#6C5CE7", "#FFB259", "#FF6FA0"]
+
+    private var safePalette: [String] {
+        palette.isEmpty ? Self.defaultPalette : palette
+    }
 
     private var initials: String {
         name.split(separator: " ")
@@ -17,7 +25,7 @@ struct AvatarView: View {
 
     var body: some View {
         ZStack {
-            MeshGradientImage(palette: palette, seed: name.count)
+            MeshGradientImage(palette: safePalette, seed: max(name.count, 1))
                 .frame(width: size, height: size)
                 .clipShape(Circle())
 

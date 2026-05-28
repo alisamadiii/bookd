@@ -8,6 +8,7 @@ struct ProfileSettingsView: View {
     @State private var showEditProfile = false
     @State private var showPersonalInfo = false
     @State private var showSignOutAlert = false
+    @State private var errorMessage: String?
 
     var body: some View {
         ScrollView {
@@ -32,29 +33,31 @@ struct ProfileSettingsView: View {
         }
         .alert("Sign out?", isPresented: $showSignOutAlert) {
             Button("Sign out", role: .destructive) {
-                Task { try? await authManager.signOut() }
+                Task {
+                    do {
+                        try await authManager.signOut()
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
+                }
             }
             Button("Cancel", role: .cancel) { }
         } message: {
             Text("You'll need to sign in again to access your account.")
         }
+        .errorAlert($errorMessage)
     }
 
     // MARK: - Profile Header
 
     private var profileHeader: some View {
         HStack(spacing: 14) {
-            if let avatarUrl = authManager.profile?.avatarUrl, !avatarUrl.isEmpty {
-                AsyncImage(url: URL(string: avatarUrl)) { image in
-                    image.resizable().scaledToFill()
-                } placeholder: {
-                    AvatarView(palette: authManager.profile?.palette ?? ["#6C5CE7", "#FFB259"], size: 64, name: authManager.profile?.fullName ?? "")
-                }
-                .frame(width: 64, height: 64)
-                .clipShape(Circle())
-            } else {
-                AvatarView(palette: authManager.profile?.palette ?? ["#6C5CE7", "#FFB259"], size: 64, name: authManager.profile?.fullName ?? "")
-            }
+            ProfileAvatarView(
+                avatarUrl: authManager.profile?.avatarUrl,
+                palette: authManager.profile?.palette ?? [],
+                name: authManager.profile?.fullName ?? "",
+                size: 64
+            )
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(authManager.profile?.fullName ?? "User")
@@ -126,10 +129,8 @@ struct ProfileSettingsView: View {
 
     private var settingsSections: some View {
         VStack(spacing: 18) {
-            // Account
             VStack(alignment: .leading, spacing: 8) {
                 sectionTitle("ACCOUNT")
-
                 VStack(spacing: 0) {
                     settingsButton(icon: "person", label: "Personal info") {
                         showPersonalInfo = true
@@ -142,10 +143,8 @@ struct ProfileSettingsView: View {
                 .background(.regularMaterial, in: RoundedRectangle(cornerRadius: BookdRadius.lg))
             }
 
-            // Preferences
             VStack(alignment: .leading, spacing: 8) {
                 sectionTitle("PREFERENCES")
-
                 VStack(spacing: 0) {
                     settingsRow(icon: "mappin", label: "Location")
                     Divider().padding(.leading, 54)
@@ -156,10 +155,8 @@ struct ProfileSettingsView: View {
                 .background(.regularMaterial, in: RoundedRectangle(cornerRadius: BookdRadius.lg))
             }
 
-            // Support
             VStack(alignment: .leading, spacing: 8) {
                 sectionTitle("SUPPORT")
-
                 VStack(spacing: 0) {
                     settingsRow(icon: "bubble.right", label: "Help center")
                     Divider().padding(.leading, 54)
@@ -197,8 +194,6 @@ struct ProfileSettingsView: View {
         }
         .padding(.top, 18)
     }
-
-    // MARK: - Helpers
 
     private func sectionTitle(_ text: String) -> some View {
         Text(text)
@@ -251,10 +246,10 @@ struct EditProfileView: View {
     @State private var avatarImage: Image?
     @State private var avatarData: Data?
     @State private var isSaving = false
+    @State private var errorMessage: String?
 
     var body: some View {
         Form {
-            // Avatar
             Section {
                 HStack {
                     Spacer()
@@ -265,16 +260,13 @@ struct EditProfileView: View {
                                 .scaledToFill()
                                 .frame(width: 96, height: 96)
                                 .clipShape(Circle())
-                        } else if let avatarUrl = authManager.profile?.avatarUrl, !avatarUrl.isEmpty {
-                            AsyncImage(url: URL(string: avatarUrl)) { image in
-                                image.resizable().scaledToFill()
-                            } placeholder: {
-                                AvatarView(palette: authManager.profile?.palette ?? ["#6C5CE7"], size: 96, name: fullName)
-                            }
-                            .frame(width: 96, height: 96)
-                            .clipShape(Circle())
                         } else {
-                            AvatarView(palette: authManager.profile?.palette ?? ["#6C5CE7"], size: 96, name: fullName)
+                            ProfileAvatarView(
+                                avatarUrl: authManager.profile?.avatarUrl,
+                                palette: authManager.profile?.palette ?? [],
+                                name: fullName,
+                                size: 96
+                            )
                         }
 
                         PhotosPicker(selection: $selectedPhoto, matching: .images) {
@@ -288,7 +280,6 @@ struct EditProfileView: View {
             }
             .listRowBackground(Color.clear)
 
-            // Info
             Section("Name") {
                 TextField("Full name", text: $fullName)
             }
@@ -310,11 +301,15 @@ struct EditProfileView: View {
                 Button("Cancel") { dismiss() }
             }
             ToolbarItem(placement: .confirmationAction) {
-                Button("Save") {
-                    Task { await save() }
+                if isSaving {
+                    ProgressView()
+                } else {
+                    Button("Save") {
+                        Task { await save() }
+                    }
+                    .fontWeight(.bold)
+                    .disabled(fullName.isEmpty)
                 }
-                .fontWeight(.bold)
-                .disabled(isSaving || fullName.isEmpty)
             }
         }
         .onAppear {
@@ -323,14 +318,26 @@ struct EditProfileView: View {
         }
         .onChange(of: selectedPhoto) { _, item in
             Task {
-                if let data = try? await item?.loadTransferable(type: Data.self) {
-                    avatarData = data
-                    if let uiImage = UIImage(data: data) {
-                        avatarImage = Image(uiImage: uiImage)
+                do {
+                    guard let item else { return }
+                    guard let data = try await item.loadTransferable(type: Data.self) else {
+                        errorMessage = "Could not load the selected image."
+                        return
                     }
+                    // Convert to JPEG for upload compatibility
+                    guard let uiImage = UIImage(data: data),
+                          let jpegData = uiImage.jpegData(compressionQuality: 0.85) else {
+                        errorMessage = "Could not process the selected image."
+                        return
+                    }
+                    avatarData = jpegData
+                    avatarImage = Image(uiImage: uiImage)
+                } catch {
+                    errorMessage = "Failed to load photo: \(error.localizedDescription)"
                 }
             }
         }
+        .errorAlert($errorMessage)
     }
 
     private func save() async {
@@ -370,7 +377,7 @@ struct EditProfileView: View {
 
             dismiss()
         } catch {
-            print("Failed to save profile: \(error)")
+            errorMessage = "Failed to save: \(error.localizedDescription)"
         }
 
         isSaving = false
