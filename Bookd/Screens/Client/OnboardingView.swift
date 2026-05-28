@@ -190,12 +190,33 @@ struct OnboardingView: View {
                     .padding(.top, 18)
                 }
                 .padding(.horizontal, 24)
-                .padding(.bottom, 40)
+                .padding(.bottom, 60)
                 .background(
-                    LinearGradient(colors: [.clear, .black.opacity(0.4)], startPoint: .top, endPoint: .bottom)
-                        .padding(.top, -60)
+                    LinearGradient(colors: [.clear, .black.opacity(0.5)], startPoint: .top, endPoint: .bottom)
+                        .padding(.top, -80)
+                        .ignoresSafeArea(edges: .bottom)
                 )
             }
         }
+        .gesture(
+            DragGesture(minimumDistance: 50)
+                .onEnded { value in
+                    withAnimation(.spring(duration: 0.4)) {
+                        if value.translation.width < -50 {
+                            // Swipe left → next
+                            if currentIndex < slides.count - 1 {
+                                currentIndex += 1
+                            } else {
+                                onComplete()
+                            }
+                        } else if value.translation.width > 50 {
+                            // Swipe right → previous
+                            if currentIndex > 0 {
+                                currentIndex -= 1
+                            }
+                        }
+                    }
+                }
+        )
     }
 }

@@ -12,17 +12,21 @@ struct BookdApp: App {
             Group {
                 if authManager.isLoading {
                     splashView
+                        .transition(.opacity)
                 } else if !authManager.isSignedIn {
                     authFlow
+                        .transition(.opacity)
                 } else {
                     MainTabView()
                         .environment(appState)
                         .environment(authManager)
                         .environment(dataService)
                         .environment(realtimeManager)
+                        .transition(.opacity)
                 }
             }
-            .animation(.easeInOut(duration: 0.3), value: authManager.isSignedIn)
+            .animation(.easeInOut(duration: 0.4), value: authManager.isSignedIn)
+            .animation(.easeInOut(duration: 0.3), value: authManager.isLoading)
             .tint(.bookdAccent)
             .environment(authManager)
         }
