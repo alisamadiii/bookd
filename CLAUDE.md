@@ -33,6 +33,10 @@
 - Use `ProfileAvatarView` for displaying any user avatar. It handles: remote image if URL exists, gradient + initials fallback.
 - `AvatarView` has a built-in `safePalette` that falls back to `["#6C5CE7", "#FFB259", "#FF6FA0"]` if palette is empty.
 
+## Swift + Supabase Gotchas
+
+- **UUID case mismatch**: Swift's `UUID.uuidString` returns UPPERCASE (`4E74DAE7-...`) but Supabase `auth.uid()::text` returns lowercase (`4e74dae7-...`). **Always use `.uuidString.lowercased()`** when building storage paths or any string compared against Postgres UUIDs. Without this, RLS policies that compare folder names to `auth.uid()` will reject the request with "new row violates row-level security policy".
+
 ## Conventions
 
 - Prices stored in **cents** in DB, converted to dollars for display
