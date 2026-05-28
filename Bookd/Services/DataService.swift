@@ -364,4 +364,117 @@ final class DataService {
             .upload(path, data: imageData, options: .init(contentType: "image/jpeg", upsert: true))
         return try AppSupabase.client.storage.from("portfolio").getPublicURL(path: path).absoluteString
     }
+
+    // MARK: - Pro Profile Updates
+
+    func updateProProfile(proId: UUID, fields: [String: String]) async throws {
+        try await AppSupabase.client
+            .from("pro_profiles")
+            .update(fields)
+            .eq("id", value: proId.uuidString)
+            .execute()
+    }
+
+    // MARK: - Working Hours
+
+    func loadWorkingHours(proId: UUID) async throws -> [DBWorkingHours] {
+        try await AppSupabase.client
+            .from("working_hours")
+            .select()
+            .eq("pro_id", value: proId.uuidString)
+            .order("day_of_week")
+            .execute()
+            .value
+    }
+
+    func upsertWorkingHours(_ hours: [DBWorkingHours]) async throws {
+        try await AppSupabase.client
+            .from("working_hours")
+            .upsert(hours)
+            .execute()
+    }
+
+    // MARK: - Reviews
+
+    func loadReviews(proId: UUID) async throws -> [DBReview] {
+        try await AppSupabase.client
+            .from("reviews")
+            .select()
+            .eq("pro_id", value: proId.uuidString)
+            .order("created_at", ascending: false)
+            .execute()
+            .value
+    }
+
+    // MARK: - Portfolio
+
+    func loadPortfolioPosts(proId: UUID) async throws -> [DBPortfolioPost] {
+        try await AppSupabase.client
+            .from("portfolio_posts")
+            .select()
+            .eq("pro_id", value: proId.uuidString)
+            .order("sort_order")
+            .execute()
+            .value
+    }
+
+    func createPortfolioPost(proId: UUID, imageUrl: String, caption: String?, sortOrder: Int) async throws {
+        var record: [String: String] = [
+            "pro_id": proId.uuidString,
+            "image_url": imageUrl,
+            "sort_order": "\(sortOrder)",
+        ]
+        if let caption { record["caption"] = caption }
+        try await AppSupabase.client
+            .from("portfolio_posts")
+            .insert(record)
+            .execute()
+    }
+
+    func deletePortfolioPost(id: UUID) async throws {
+        try await AppSupabase.client
+            .from("portfolio_posts")
+            .delete()
+            .eq("id", value: id.uuidString)
+            .execute()
+    }
+
+    // MARK: - Analytics
+
+    func loadProfileViewsCount(proId: UUID, since: Date) async throws -> Int {
+        let sinceIso = ISO8601DateFormatter().string(from: since)
+        let views: [DBProfileView] = try await AppSupabase.client
+            .from("profile_views")
+            .select()
+            .eq("pro_id", value: proId.uuidString)
+            .gte("created_at", value: sinceIso)
+            .execute()
+            .value
+        return views.count
+    }
+
+    func loadEarningsSummary(proId: UUID) async throws -> (week: Int, month: Int, total: Int) {
+        let today = Calendar.current.startOfDay(for: Date())
+        let weekStart = Calendar.current.date(byAdding: .day, value: -7, to: today)!
+        let monthStart = Calendar.current.date(byAdding: .month, value: -1, to: today)!
+
+        let allCompleted: [DBAppointment] = try await AppSupabase.client
+            .from("appointments")
+            .select()
+            .eq("pro_id", value: proId.uuidString)
+            .eq("status", value: "completed")
+            .execute()
+            .value
+
+        let weekEarnings = allCompleted
+            .filter { $0.startsAt >= weekStart }
+            .reduce(0) { $0 + $1.subtotal + ($1.tipAmount ?? 0) }
+        let monthEarnings = allCompleted
+            .filter { $0.startsAt >= monthStart }
+            .reduce(0) { $0 + $1.subtotal + ($1.tipAmount ?? 0) }
+        let totalEarnings = allCompleted
+            .reduce(0) { $0 + $1.subtotal + ($1.tipAmount ?? 0) }
+
+        return (weekEarnings, monthEarnings, totalEarnings)
+    }
 }

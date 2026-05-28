@@ -18,85 +18,175 @@ struct ProSetupView: View {
     let onDone: () -> Void
     let onClose: () -> Void
 
+    @Environment(AuthManager.self) private var authManager
+    @Environment(DataService.self) private var dataService
+
     @State private var step: ProSetupStep = .basics
     @State private var businessName = ""
-    @State private var city = "Brooklyn, NY"
+    @State private var city = ""
     @State private var bio = ""
     @State private var selectedCategory: String?
     @State private var services: [ProService] = [
         ProService(id: "s1", name: "Signature cut", price: 120, duration: 45)
     ]
     @State private var openDays = [true, true, true, true, true, true, false]
+    @State private var isSaving = false
+    @State private var errorMessage: String?
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                // Progress segments
-                HStack(spacing: 4) {
-                    ForEach(ProSetupStep.allCases, id: \.rawValue) { s in
-                        Capsule()
-                            .fill(s.rawValue <= step.rawValue ? AnyShapeStyle(Color.bookdAccent) : AnyShapeStyle(.quaternary))
-                            .frame(height: 3)
-                    }
-                }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 12)
-                .animation(.spring(duration: 0.3), value: step)
-
-                // Body
-                ScrollView {
-                    VStack(alignment: .leading) {
-                        stepContent
-                    }
-                    .padding(16)
-                    .padding(.bottom, 80)
-                }
-
-                // Footer
-                VStack {
-                    Divider()
-                    Button {
-                        withAnimation(.spring(duration: 0.3)) {
-                            if step == .gallery {
-                                onDone()
-                            } else if let next = ProSetupStep(rawValue: step.rawValue + 1) {
-                                step = next
-                            }
+            ZStack {
+                VStack(spacing: 0) {
+                    // Progress segments
+                    HStack(spacing: 4) {
+                        ForEach(ProSetupStep.allCases, id: \.rawValue) { s in
+                            Capsule()
+                                .fill(s.rawValue <= step.rawValue ? AnyShapeStyle(Color.bookdProAccent) : AnyShapeStyle(.quaternary))
+                                .frame(height: 3)
                         }
-                    } label: {
-                        HStack {
-                            Text(step == .gallery ? "Publish profile" : "Continue")
-                            Image(systemName: "arrow.right")
-                        }
-                        .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    .tint(.bookdAccent)
-                }
-                .padding(16)
-                .background(.regularMaterial)
-            }
-            .navigationTitle("Build your Bookd")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    if step.rawValue > 0 {
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 12)
+                    .animation(.spring(duration: 0.3), value: step)
+
+                    // Body
+                    ScrollView {
+                        VStack(alignment: .leading) {
+                            stepContent
+                        }
+                        .padding(16)
+                        .padding(.bottom, 80)
+                    }
+
+                    // Footer
+                    VStack {
                         Button {
-                            if let prev = ProSetupStep(rawValue: step.rawValue - 1) {
-                                withAnimation { step = prev }
+                            if step == .gallery {
+                                Task { await publishProfile() }
+                            } else {
+                                withAnimation(.spring(duration: 0.3)) {
+                                    if let next = ProSetupStep(rawValue: step.rawValue + 1) {
+                                        step = next
+                                    }
+                                }
                             }
                         } label: {
-                            Image(systemName: "chevron.left")
+                            HStack {
+                                Text(step == .gallery ? "Publish profile" : "Continue")
+                                Image(systemName: "arrow.right")
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
+                        .tint(.bookdProAccent)
+                        .disabled(isSaving || !canContinue)
+                    }
+                    .padding(16)
+                    .background(.ultraThinMaterial)
+                }
+                .navigationTitle("Build your Bookd")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        if step.rawValue > 0 {
+                            Button {
+                                if let prev = ProSetupStep(rawValue: step.rawValue - 1) {
+                                    withAnimation { step = prev }
+                                }
+                            } label: {
+                                Image(systemName: "chevron.left")
+                            }
+                        } else {
+                            Button("Cancel") { onClose() }
+                                .font(.system(size: 14, weight: .semibold))
                         }
                     }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Skip") { onDone() }
-                        .font(.system(size: 14, weight: .semibold))
+
+                if isSaving {
+                    Color.black.opacity(0.3).ignoresSafeArea()
+                    ProgressView("Publishing...")
+                        .padding(24)
+                        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: BookdRadius.lg))
                 }
             }
         }
+        .interactiveDismissDisabled(isSaving)
+        .errorAlert($errorMessage)
+    }
+
+    private var canContinue: Bool {
+        switch step {
+        case .basics: !businessName.isEmpty
+        case .category: selectedCategory != nil
+        case .services: !services.isEmpty && services.contains { !$0.name.isEmpty }
+        case .hours: true
+        case .gallery: true
+        }
+    }
+
+    // MARK: - Publish
+
+    private func publishProfile() async {
+        isSaving = true
+
+        do {
+            // 1. Create pro profile + set role
+            try await authManager.createProProfile(
+                businessName: businessName,
+                category: selectedCategory ?? "hair",
+                city: city,
+                bio: bio
+            )
+
+            guard let proProfile = authManager.proProfile else {
+                errorMessage = "Failed to create profile. Please try again."
+                isSaving = false
+                return
+            }
+
+            // 2. Insert services
+            for (idx, service) in services.enumerated() where !service.name.isEmpty {
+                var record: [String: String] = [
+                    "pro_id": proProfile.id.uuidString,
+                    "name": service.name,
+                    "price": "\(service.price * 100)", // convert to cents
+                    "duration": "\(service.duration)",
+                    "sort_order": "\(idx)",
+                    "is_active": "true",
+                ]
+                try await AppSupabase.client
+                    .from("services")
+                    .insert(record)
+                    .execute()
+            }
+
+            // 3. Insert working hours (Mon=1..Sun=0 mapping: openDays[0]=Mon..openDays[6]=Sun)
+            let dayMapping = [1, 2, 3, 4, 5, 6, 0] // Mon-Sun → DB day_of_week
+            for (idx, isOpen) in openDays.enumerated() {
+                let record: [String: String] = [
+                    "pro_id": proProfile.id.uuidString,
+                    "day_of_week": "\(dayMapping[idx])",
+                    "is_open": "\(isOpen)",
+                    "open_time": "10:00",
+                    "close_time": "19:00",
+                ]
+                try await AppSupabase.client
+                    .from("working_hours")
+                    .insert(record)
+                    .execute()
+            }
+
+            // 4. Reload profile state
+            await authManager.reloadProfile()
+
+            onDone()
+        } catch {
+            errorMessage = "Failed to publish: \(error.localizedDescription)"
+        }
+
+        isSaving = false
     }
 
     // MARK: - Step Content
@@ -153,7 +243,7 @@ struct ProSetupView: View {
                             .font(.system(size: 11))
                             .foregroundStyle(.white)
                             .frame(width: 30, height: 30)
-                            .background(Color.bookdAccent, in: Circle())
+                            .background(Color.bookdProAccent, in: Circle())
                             .overlay(Circle().strokeBorder(.background, lineWidth: 3))
                     }
                     .offset(x: 28, y: 28)
@@ -246,10 +336,10 @@ struct ProSetupView: View {
                         .clipShape(RoundedRectangle(cornerRadius: BookdRadius.md))
                         .overlay(
                             RoundedRectangle(cornerRadius: BookdRadius.md)
-                                .strokeBorder(isSelected ? Color.bookdAccent : .clear, lineWidth: 2.5)
+                                .strokeBorder(isSelected ? Color.bookdProAccent : .clear, lineWidth: 2.5)
                         )
                         .scaleEffect(isSelected ? 1.02 : 1)
-                        .shadow(color: isSelected ? .bookdAccent.opacity(0.2) : .clear, radius: 10, y: 4)
+                        .shadow(color: isSelected ? .bookdProAccent.opacity(0.2) : .clear, radius: 10, y: 4)
                     }
                     .buttonStyle(.plain)
                 }
@@ -349,7 +439,7 @@ struct ProSetupView: View {
 
                         Toggle("", isOn: $openDays[idx])
                             .labelsHidden()
-                            .tint(.bookdAccent)
+                            .tint(.bookdProAccent)
 
                         Text(openDays[idx] ? "10:00 AM — 7:00 PM" : "Closed")
                             .font(.system(size: 14))
@@ -420,13 +510,13 @@ struct ProSetupView: View {
 
             HStack(spacing: 8) {
                 Image(systemName: "lightbulb.fill")
-                    .foregroundStyle(Color.bookdAccent)
+                    .foregroundStyle(Color.bookdProAccent)
                 Text("**Tip:** Bookd pros with 9+ portfolio posts get 3× more bookings.")
             }
             .font(.system(size: 13))
-            .foregroundStyle(Color.bookdAccent)
+            .foregroundStyle(Color.bookdProAccent)
             .padding(14)
-            .background(Color.bookdAccentSoft, in: RoundedRectangle(cornerRadius: BookdRadius.md))
+            .background(Color.bookdProAccentSoft, in: RoundedRectangle(cornerRadius: BookdRadius.md))
             .padding(.top, 16)
         }
     }

@@ -12,6 +12,8 @@ enum BookdRadius {
 extension Color {
     static let bookdAccent = Color(red: 0.424, green: 0.361, blue: 0.906) // #6C5CE7
     static let bookdAccentSoft = Color.bookdAccent.opacity(0.12)
+    static let bookdProAccent = Color(red: 0.831, green: 0.659, blue: 0.325) // #D4A853 warm gold
+    static let bookdProAccentSoft = Color.bookdProAccent.opacity(0.12)
     static let bookdDanger = Color(red: 1.0, green: 0.35, blue: 0.37)
     static let bookdSuccess = Color(red: 0.48, green: 0.9, blue: 0.51)
     static let bookdWarning = Color(red: 1.0, green: 0.85, blue: 0.42)

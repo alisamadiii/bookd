@@ -27,7 +27,8 @@ struct BookdApp: App {
             }
             .animation(.easeInOut(duration: 0.4), value: authManager.isSignedIn)
             .animation(.easeInOut(duration: 0.3), value: authManager.isLoading)
-            .tint(.bookdAccent)
+            .tint(appState.isPro ? .bookdProAccent : .bookdAccent)
+            .animation(.easeInOut(duration: 0.3), value: appState.isPro)
             .environment(authManager)
         }
     }
@@ -102,7 +103,7 @@ struct MainTabView: View {
                             bookingProId: $state.bookingProId
                         )
                         .navigationDestination(item: $state.selectedProId) { proId in
-                            PublicProfileView(proId: proId) { pId, sId in
+                            ProDetailView(proId: proId) { pId, sId in
                                 appState.startBooking(proId: pId, serviceId: sId)
                             } onMessage: { pId in
                                 if let thread = SampleData.threads.first(where: { $0.proId == pId }) {
@@ -148,12 +149,16 @@ struct MainTabView: View {
             Tab("Profile", systemImage: "person.fill", value: .profile) {
                 NavigationStack {
                     if appState.isPro {
-                        ProProfileView {
+                        ProAccountView {
                             appState.togglePerspective()
                         }
                     } else {
-                        ProfileSettingsView {
-                            appState.togglePerspective()
+                        ClientAccountView {
+                            if authManager.isPro {
+                                appState.togglePerspective()
+                            } else {
+                                appState.showProSetup = true
+                            }
                         }
                     }
                 }
@@ -176,12 +181,24 @@ struct MainTabView: View {
         .sheet(isPresented: $state.showProSetup) {
             ProSetupView {
                 appState.showProSetup = false
+                appState.isPro = true
+                appState.selectedTab = .home
             } onClose: {
                 appState.showProSetup = false
             }
         }
         .task {
             await dataService.loadFeed()
+        }
+        .onAppear {
+            if authManager.isPro {
+                appState.isPro = true
+            }
+        }
+        .onChange(of: authManager.isPro) { _, newValue in
+            if newValue && !appState.isPro {
+                appState.isPro = true
+            }
         }
     }
 }

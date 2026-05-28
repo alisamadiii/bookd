@@ -1,7 +1,7 @@
 import SwiftUI
 import MapKit
 
-struct PublicProfileView: View {
+struct ProDetailView: View {
     let proId: String
     let onBook: (String, String?) -> Void
     let onMessage: (String) -> Void

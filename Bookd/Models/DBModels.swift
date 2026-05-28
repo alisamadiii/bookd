@@ -38,6 +38,7 @@ struct DBProProfile: Codable, Identifiable, Hashable, Sendable {
     var latitude: Double?
     var longitude: Double?
     var verified: Bool
+    var avatarUrl: String?
     var coverUrl: String?
     var badges: [String]?
     var stripeAccountId: String?
@@ -56,6 +57,7 @@ struct DBProProfile: Codable, Identifiable, Hashable, Sendable {
         case userId = "user_id"
         case businessName = "business_name"
         case roleTitle = "role_title"
+        case avatarUrl = "avatar_url"
         case coverUrl = "cover_url"
         case stripeAccountId = "stripe_account_id"
         case stripeOnboarded = "stripe_onboarded"
@@ -271,6 +273,20 @@ struct DBNotification: Codable, Identifiable, Sendable {
         case id, type, title, body, data
         case userId = "user_id"
         case readAt = "read_at"
+        case createdAt = "created_at"
+    }
+}
+
+struct DBProfileView: Codable, Identifiable, Sendable {
+    let id: UUID
+    let proId: UUID
+    let viewerId: UUID?
+    let createdAt: Date?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case proId = "pro_id"
+        case viewerId = "viewer_id"
         case createdAt = "created_at"
     }
 }

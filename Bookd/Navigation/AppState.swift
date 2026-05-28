@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import Observation
 
 @Observable
@@ -25,9 +26,11 @@ final class AppState {
     }
 
     func togglePerspective() {
-        withAnimation(.spring(duration: 0.3)) {
+        let impact = UIImpactFeedbackGenerator(style: .medium)
+        impact.impactOccurred()
+
+        withAnimation(.spring(duration: 0.25, bounce: 0.15)) {
             isPro.toggle()
-            selectedTab = .home
         }
     }
 }

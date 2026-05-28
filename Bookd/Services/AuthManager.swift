@@ -90,21 +90,51 @@ final class AuthManager {
             .eq("id", value: uid.uuidString)
             .execute()
 
-        if role == "pro" {
-            // Create pro_profile if doesn't exist
-            let existing: [DBProProfile] = try await AppSupabase.client
+        await loadProfile(uid: uid)
+    }
+
+    func createProProfile(businessName: String, category: String, city: String, bio: String) async throws {
+        guard let uid = userId else { return }
+
+        // Set role to pro
+        try await AppSupabase.client
+            .from("profiles")
+            .update(["role": "pro"])
+            .eq("id", value: uid.uuidString)
+            .execute()
+
+        // Create or update pro_profiles row with real data
+        let existing: [DBProProfile] = try await AppSupabase.client
+            .from("pro_profiles")
+            .select()
+            .eq("user_id", value: uid.uuidString)
+            .execute()
+            .value
+
+        if existing.isEmpty {
+            try await AppSupabase.client
                 .from("pro_profiles")
-                .select()
+                .insert([
+                    "user_id": uid.uuidString,
+                    "business_name": businessName,
+                    "category": category,
+                    "city": city,
+                    "bio": bio,
+                    "is_published": "true",
+                ])
+                .execute()
+        } else {
+            try await AppSupabase.client
+                .from("pro_profiles")
+                .update([
+                    "business_name": businessName,
+                    "category": category,
+                    "city": city,
+                    "bio": bio,
+                    "is_published": "true",
+                ])
                 .eq("user_id", value: uid.uuidString)
                 .execute()
-                .value
-
-            if existing.isEmpty {
-                try await AppSupabase.client
-                    .from("pro_profiles")
-                    .insert(["user_id": uid.uuidString, "category": "hair"])
-                    .execute()
-            }
         }
 
         await loadProfile(uid: uid)
@@ -152,7 +182,12 @@ final class AuthManager {
 
     // MARK: - Load Profile
 
-    private func loadProfile(uid: UUID) async {
+    func reloadProfile() async {
+        guard let uid = userId else { return }
+        await loadProfile(uid: uid)
+    }
+
+    func loadProfile(uid: UUID) async {
         do {
             let profiles: [DBProfile] = try await AppSupabase.client
                 .from("profiles")

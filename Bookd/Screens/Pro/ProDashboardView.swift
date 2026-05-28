@@ -44,13 +44,17 @@ struct ProDashboardView: View {
                 Text("Tuesday, May 27")
                     .font(.system(size: 13))
                     .foregroundStyle(.secondary)
-                HStack(spacing: 4) {
+                HStack(spacing: 6) {
                     Text("Hey, Mira")
                         .font(.system(size: 28, weight: .heavy))
                         .tracking(-0.5)
-                    Text("↗")
-                        .font(.system(size: 28, weight: .heavy))
-                        .foregroundStyle(Color.bookdAccent)
+                    Text("PRO")
+                        .font(.system(size: 10, weight: .heavy))
+                        .tracking(1)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(Color.bookdProAccent, in: Capsule())
                 }
             }
             Spacer()
@@ -59,7 +63,7 @@ struct ProDashboardView: View {
         .padding(.horizontal, 16)
         .padding(.top, 4)
         .background(
-            LinearGradient(colors: [Color.bookdAccent.opacity(0.16), .clear],
+            LinearGradient(colors: [Color.bookdProAccent.opacity(0.16), .clear],
                            startPoint: .top, endPoint: .bottom)
             .frame(height: 220)
             .frame(maxHeight: .infinity, alignment: .top)
@@ -115,7 +119,7 @@ struct ProDashboardView: View {
                 HStack(spacing: 4) {
                     ForEach(1...4, id: \.self) { i in
                         RoundedRectangle(cornerRadius: 5)
-                            .fill(Color.bookdAccent.opacity(0.4 + Double(i) * 0.15))
+                            .fill(Color.bookdProAccent.opacity(0.4 + Double(i) * 0.15))
                             .frame(height: 26)
                     }
                 }
@@ -138,7 +142,7 @@ struct ProDashboardView: View {
                 Spacer()
                 Button("Open hours") { }
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color.bookdAccent)
+                    .foregroundStyle(Color.bookdProAccent)
             }
             .padding(.horizontal, 20)
 
@@ -156,7 +160,7 @@ struct ProDashboardView: View {
                         .frame(width: 60, alignment: .leading)
 
                         RoundedRectangle(cornerRadius: 1)
-                            .fill(Color.bookdAccent)
+                            .fill(Color.bookdProAccent)
                             .frame(width: 2)
 
                         VStack(alignment: .leading, spacing: 2) {
@@ -238,22 +242,22 @@ struct ProDashboardView: View {
                 Image(systemName: "pencil")
                     .foregroundStyle(.white)
                     .frame(width: 44, height: 44)
-                    .background(Color.bookdAccent, in: RoundedRectangle(cornerRadius: 14))
+                    .background(Color.bookdProAccent, in: RoundedRectangle(cornerRadius: 14))
 
                 VStack(alignment: .leading, spacing: 1) {
                     Text("Refresh your profile")
                         .font(.system(size: 14.5, weight: .bold))
-                        .foregroundStyle(Color.bookdAccent)
+                        .foregroundStyle(Color.bookdProAccent)
                     Text("3 new portfolio slots open · add to boost discovery")
                         .font(.system(size: 12.5))
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .foregroundStyle(Color.bookdAccent)
+                    .foregroundStyle(Color.bookdProAccent)
             }
             .padding(16)
-            .background(Color.bookdAccentSoft, in: RoundedRectangle(cornerRadius: BookdRadius.lg))
+            .background(Color.bookdProAccentSoft, in: RoundedRectangle(cornerRadius: BookdRadius.lg))
         }
         .buttonStyle(.plain)
     }
@@ -264,7 +268,7 @@ struct ProDashboardView: View {
         let activities: [(icon: String, text: String, time: String, color: Color)] = [
             ("dollarsign", "Sasha M. booked Color refresh", "Just now", .bookdSuccess),
             ("star", "New 5★ review from Devon K.", "12m", .bookdWarning),
-            ("person", "You gained 8 new followers", "1h", .bookdAccent),
+            ("person", "You gained 8 new followers", "1h", .bookdProAccent),
             ("calendar", "Mae L. rescheduled to 1pm", "2h", .secondary),
         ]
 

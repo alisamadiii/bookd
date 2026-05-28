@@ -1,7 +1,7 @@
 import SwiftUI
 import PhotosUI
 
-struct ProfileSettingsView: View {
+struct ClientAccountView: View {
     let onSwitchToPro: () -> Void
 
     @Environment(AuthManager.self) private var authManager
@@ -119,6 +119,7 @@ struct ProfileSettingsView: View {
                     .foregroundStyle(Color.bookdAccent)
             }
             .padding(14)
+            .contentShape(Rectangle())
             .background(Color.bookdAccentSoft, in: RoundedRectangle(cornerRadius: BookdRadius.lg))
         }
         .buttonStyle(.plain)
@@ -228,6 +229,7 @@ struct ProfileSettingsView: View {
     private func settingsButton(icon: String, label: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             settingsRow(icon: icon, label: label)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }

@@ -62,10 +62,10 @@ struct HomeFeedView: View {
                         .padding(.vertical, 8)
                         .background(
                             selectedCategory == cat.id
-                                ? AnyShapeStyle(.primary)
+                                ? AnyShapeStyle(Color.bookdAccent)
                                 : AnyShapeStyle(.regularMaterial)
                         )
-                        .foregroundStyle(selectedCategory == cat.id ? Color(.systemBackground) : .primary)
+                        .foregroundStyle(selectedCategory == cat.id ? .white : .primary)
                         .clipShape(Capsule())
                     }
                     .buttonStyle(.plain)
